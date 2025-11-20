@@ -12,7 +12,7 @@ class CategoriesRepositoryImpl implements CategoriesRepository {
   CategoriesRepositoryImpl(this.categoriesService);
 
   @override
-  Future<Resource<Category>> create(Category category, File file) {
+  Future<Resource<Category>> create(Category category, File? file) {
     return categoriesService.create(category, file);
   }
   

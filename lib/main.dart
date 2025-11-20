@@ -73,6 +73,7 @@ class MyApp extends StatelessWidget {
           'admin/order/detail': (BuildContext context) => AdminOrderDetailPage(),          
           'client/order/detail': (BuildContext context) => ClientOrderDetailPage(),          
           '/roles/cliente': (BuildContext context) => ClientHomePage(),
+          '/roles/administrador': (BuildContext context) => AdminHomePage(),
           '/roles/admin': (BuildContext context) => AdminHomePage(),
         },
       ),

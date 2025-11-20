@@ -7,6 +7,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/profile/update/bloc/Pro
 import 'package:ecommerce_flutter/src/presentation/pages/profile/update/bloc/ProfileUpdateEvent.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/profile/update/bloc/ProfileUpdateState.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -40,7 +41,7 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
         listener: (context, state) {
           final responseState = state.response;
           if (responseState is Error) {
-            Fluttertoast.showToast(msg: responseState.message, toastLength: Toast.LENGTH_LONG);
+            _showToast(context, responseState.message);
           }
           else if (responseState is Success) {
             User user = responseState.data as User;
@@ -48,7 +49,7 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
             Future.delayed(Duration(seconds: 1), () {
               context.read<ProfileInfoBloc>().add(ProfileInfoGetUser()); 
             });
-            Fluttertoast.showToast(msg: 'Actualizacion exitosa', toastLength: Toast.LENGTH_LONG);
+            _showToast(context, 'Actualizacion exitosa');
           }
         },
         child: BlocBuilder<ProfileUpdateBloc, ProfileUpdateState>(
@@ -67,5 +68,13 @@ class _ProfileUpdatePageState extends State<ProfileUpdatePage> {
         ),
       )
     );
+  }
+
+  Future<void> _showToast(BuildContext context, String message) async {
+    try {
+      await Fluttertoast.showToast(msg: message, toastLength: Toast.LENGTH_LONG);
+    } on MissingPluginException {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 }

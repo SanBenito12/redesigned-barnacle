@@ -27,6 +27,13 @@ class DescriptionChanged extends AdminCategoryCreateEvent {
   List<Object?> get props => [description];
 }
 
+class ImageUrlChanged extends AdminCategoryCreateEvent {
+  final BlocFormItem imageUrl;
+  const ImageUrlChanged({ required this.imageUrl });
+  @override
+  List<Object?> get props => [imageUrl];
+}
+
 class FormSubmit extends AdminCategoryCreateEvent {
   const FormSubmit();
   @override

@@ -14,30 +14,51 @@ class CategoriesService {
 
   CategoriesService(this.token);
 
-  Future<Resource<Category>> create(Category category, File file) async {
+  Future<Resource<Category>> create(Category category, File? file) async {
     try {
-      // http://192.168.80.13:3000/users/5
       Uri url = Uri.http(ApiConfig.API_ECOMMERCE, '/categories'); 
-      final request = http.MultipartRequest('POST', url);
-      request.headers['Authorization'] = await token;
-      request.files.add(http.MultipartFile(
-        'file',
-        http.ByteStream(file.openRead().cast()),
-        await file.length(),
-        filename: basename(file.path),
-        contentType: MediaType('image', 'jpg')
-      ));
-      request.fields['name'] = category.name;
-      request.fields['description'] = category.description;
-      final response = await request.send();
-      final data = json.decode(await response.stream.transform(utf8.decoder).first);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Category categoryResponse = Category.fromJson(data);
-        return Success(categoryResponse);
+      if (file != null) {
+        final request = http.MultipartRequest('POST', url);
+        request.headers['Authorization'] = await token;
+        request.files.add(http.MultipartFile(
+          'file',
+          http.ByteStream(file.openRead().cast()),
+          await file.length(),
+          filename: basename(file.path),
+          contentType: MediaType('image', 'jpg')
+        ));
+        request.fields['name'] = category.name;
+        request.fields['description'] = category.description;
+        final response = await request.send();
+        final data = json.decode(await response.stream.transform(utf8.decoder).first);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Category categoryResponse = Category.fromJson(data);
+          return Success(categoryResponse);
+        }
+        else { // ERROR
+          return Error(listToString(data['message']));
+        }      
       }
-      else { // ERROR
-        return Error(listToString(data['message']));
-      }      
+      else {
+        Map<String, String> headers = { 
+          "Content-Type": "application/json",
+          "Authorization": await token
+        };
+        String body = json.encode({
+          'name': category.name,
+          'description': category.description,
+          if (category.image != null && category.image!.isNotEmpty) 'image': category.image
+        });
+        final response = await http.post(url, headers: headers, body: body);
+        final data = json.decode(response.body);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Category categoryResponse = Category.fromJson(data);
+          return Success(categoryResponse);
+        }
+        else { // ERROR
+          return Error(listToString(data['message']));
+        } 
+      }
     } catch (e) {
       print('Error: $e');
       return Error(e.toString());
@@ -76,6 +97,7 @@ class CategoriesService {
       String body = json.encode({
         'name': category.name,
         'description': category.description,
+        if (category.image != null && category.image!.isNotEmpty) 'image': category.image,
       });
       final response = await http.put(url, headers: headers, body: body);
       final data = json.decode(response.body);

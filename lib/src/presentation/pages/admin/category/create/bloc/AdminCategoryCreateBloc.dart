@@ -16,6 +16,7 @@ class AdminCategoryCreateBloc extends Bloc<AdminCategoryCreateEvent, AdminCatego
     on<AdminCategoryCreateInitEvent>(_onInitEvent);
     on<NameChanged>(_onNameChanged);
     on<DescriptionChanged>(_onDescriptionChanged);
+    on<ImageUrlChanged>(_onImageUrlChanged);
     on<FormSubmit>(_onFormSubmit);
     on<ResetForm>(_onResetForm);
     on<PickImage>(_onPickImage);
@@ -56,6 +57,19 @@ class AdminCategoryCreateBloc extends Bloc<AdminCategoryCreateEvent, AdminCatego
     );
   }
 
+  Future<void> _onImageUrlChanged(ImageUrlChanged event, Emitter<AdminCategoryCreateState> emit) async {
+    emit(
+      state.copyWith(
+        imageUrl: BlocFormItem(
+          value: event.imageUrl.value,
+          error: null
+        ),
+        file: null,
+        formKey: formKey
+      )
+    );
+  }
+
   Future<void> _onPickImage(PickImage event, Emitter<AdminCategoryCreateState> emit) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -63,6 +77,7 @@ class AdminCategoryCreateBloc extends Bloc<AdminCategoryCreateEvent, AdminCatego
       emit(
         state.copyWith(
           file: File(image.path),
+          imageUrl: const BlocFormItem(value: ''),
           formKey: formKey
         )
       );
@@ -76,6 +91,7 @@ class AdminCategoryCreateBloc extends Bloc<AdminCategoryCreateEvent, AdminCatego
       emit(
         state.copyWith(
           file: File(image.path),
+          imageUrl: const BlocFormItem(value: ''),
           formKey: formKey
         )
       );
@@ -83,13 +99,22 @@ class AdminCategoryCreateBloc extends Bloc<AdminCategoryCreateEvent, AdminCatego
   }
 
   Future<void> _onFormSubmit(FormSubmit event, Emitter<AdminCategoryCreateState> emit) async {
+      if (state.file == null && state.imageUrl.value.isEmpty) {
+        emit(
+          state.copyWith(
+            response: Error('Selecciona una imagen o ingresa el link'),
+            formKey: formKey
+          )
+        );
+        return;
+      }
       emit(
         state.copyWith(
           response: Loading(),
           formKey: formKey
         )
       );
-      Resource response = await categoriesUseCases.create.run(state.toCategory(), state.file!);
+      Resource response = await categoriesUseCases.create.run(state.toCategory(), state.file);
       emit(
         state.copyWith(
           response: response,

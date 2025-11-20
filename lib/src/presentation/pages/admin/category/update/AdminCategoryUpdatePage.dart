@@ -27,7 +27,13 @@ class _AdminCategoryUpdatePageState extends State<AdminCategoryUpdatePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _bloc?.add(AdminCategoryUpdateInitEvent(category: category));
+      final bloc = BlocProvider.of<AdminCategoryUpdateBloc>(context);
+      final argsCategory = ModalRoute.of(context)?.settings.arguments as Category;
+      setState(() {
+        _bloc = bloc;
+        category = argsCategory;
+      });
+      bloc.add(AdminCategoryUpdateInitEvent(category: argsCategory));
     });
   }
 
@@ -39,8 +45,6 @@ class _AdminCategoryUpdatePageState extends State<AdminCategoryUpdatePage> {
 
   @override
   Widget build(BuildContext context) {
-    _bloc = BlocProvider.of<AdminCategoryUpdateBloc>(context);
-    category = ModalRoute.of(context)?.settings.arguments as Category;
     return Scaffold(
       body: BlocListener<AdminCategoryUpdateBloc, AdminCategoryUpdateState>(
         listener: (context, state) {

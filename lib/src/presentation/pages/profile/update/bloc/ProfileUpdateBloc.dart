@@ -21,6 +21,7 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
     on<ProfileUpdateNameChanged>(_onNameChanged);
     on<ProfileUpdateLastnameChanged>(_onLastnameChanged);
     on<ProfileUpdatePhoneChanged>(_onPhoneChanged);
+    on<ProfileUpdateImageUrlChanged>(_onImageUrlChanged);
     on<ProfileUpdatePickImage>(_onPickImage);
     on<ProfileUpdateTakePhoto>(_onTakePhoto);
     on<ProfileUpdateFormSubmit>(_onFormSubmit);
@@ -34,6 +35,8 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
         name: BlocFormItem(value: event.user?.name ?? ''),
         lastname: BlocFormItem(value: event.user?.lastname ?? ''),
         phone: BlocFormItem(value: event.user?.phone ?? ''),
+        imageUrl: BlocFormItem(value: event.user?.image ?? ''),
+        notificationToken: event.user?.notificationToken,
         formKey: formKey,
       )
     );
@@ -41,10 +44,14 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
 
   Future<void> _onUpdateUserSession(ProfileUpdateUpdateUserSession event, Emitter<ProfileUpdateState> emit) async {
     AuthResponse authResponse = await authUseCases.getUserSession.run(); // USUARIO SESION
+    final currentRoles = authResponse.user.roles;
     authResponse.user.name = event.user.name;
     authResponse.user.lastname = event.user.lastname;
     authResponse.user.phone = event.user.phone;
     authResponse.user.image = event.user.image;
+    authResponse.user.roles = (event.user.roles != null && event.user.roles!.isNotEmpty)
+        ? event.user.roles
+        : currentRoles;
     await authUseCases.saveUserSession.run(authResponse);
   }
 
@@ -71,6 +78,7 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
       emit(
         state.copyWith(
           image: File(image.path),
+          imageUrl: const BlocFormItem(value: ''),
           formKey: formKey
         )
       );
@@ -84,6 +92,7 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
       emit(
         state.copyWith(
           image: File(image.path),
+          imageUrl: const BlocFormItem(value: ''),
           formKey: formKey
         )
       );
@@ -126,4 +135,17 @@ class ProfileUpdateBloc extends Bloc<ProfileUpdateEvent, ProfileUpdateState> {
     );
   }
 
-} 
+  Future<void> _onImageUrlChanged(ProfileUpdateImageUrlChanged event, Emitter<ProfileUpdateState> emit) async {
+    emit(
+      state.copyWith(
+        imageUrl: BlocFormItem(
+          value: event.imageUrl.value,
+          error: null
+        ),
+        image: null,
+        formKey: formKey
+      )
+    );
+  }
+
+}

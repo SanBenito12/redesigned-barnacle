@@ -16,6 +16,7 @@ class AdminCategoryUpdateBloc extends Bloc<AdminCategoryUpdateEvent, AdminCatego
     on<AdminCategoryUpdateInitEvent>(_onInitEvent);
     on<NameChanged>(_onNameChanged);
     on<DescriptionChanged>(_onDescriptionChanged);
+    on<ImageUrlChanged>(_onImageUrlChanged);
     on<FormSubmit>(_onFormSubmit);
     on<PickImage>(_onPickImage);
     on<TakePhoto>(_onTakePhoto);
@@ -30,6 +31,7 @@ class AdminCategoryUpdateBloc extends Bloc<AdminCategoryUpdateEvent, AdminCatego
         id: event.category?.id,
         name: BlocFormItem(value: event.category?.name ?? ''),
         description: BlocFormItem(value: event.category?.description ?? ''),
+        imageUrl: BlocFormItem(value: event.category?.image ?? ''),
         formKey: formKey
       )
     );
@@ -59,6 +61,19 @@ class AdminCategoryUpdateBloc extends Bloc<AdminCategoryUpdateEvent, AdminCatego
     );
   }
 
+  Future<void> _onImageUrlChanged(ImageUrlChanged event, Emitter<AdminCategoryUpdateState> emit) async {
+    emit(
+      state.copyWith(
+        imageUrl: BlocFormItem(
+          value: event.imageUrl.value,
+          error: null
+        ),
+        file: null,
+        formKey: formKey
+      )
+    );
+  }
+
   Future<void> _onPickImage(PickImage event, Emitter<AdminCategoryUpdateState> emit) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -66,6 +81,7 @@ class AdminCategoryUpdateBloc extends Bloc<AdminCategoryUpdateEvent, AdminCatego
       emit(
         state.copyWith(
           file: File(image.path),
+          imageUrl: const BlocFormItem(value: ''),
           formKey: formKey
         )
       );
@@ -79,6 +95,7 @@ class AdminCategoryUpdateBloc extends Bloc<AdminCategoryUpdateEvent, AdminCatego
       emit(
         state.copyWith(
           file: File(image.path),
+          imageUrl: const BlocFormItem(value: ''),
           formKey: formKey
         )
       );

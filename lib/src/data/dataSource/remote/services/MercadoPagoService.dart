@@ -95,7 +95,11 @@ class MercadoPagoService {
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        MercadoPagoInstallments mercadoPagoInstallments = MercadoPagoInstallments.fromJson(data);
+        final installmentsPayload = _extractInstallmentsPayload(data);
+        if (installmentsPayload == null) {
+          return Error('No se pudo obtener la información de cuotas');
+        }
+        MercadoPagoInstallments mercadoPagoInstallments = MercadoPagoInstallments.fromJson(installmentsPayload);
         return Success(mercadoPagoInstallments);
       }
       else { // ERROR
@@ -105,6 +109,19 @@ class MercadoPagoService {
       print('Error: $e');
       return Error(e.toString());
     }
+  }
+
+  Map<String, dynamic>? _extractInstallmentsPayload(dynamic data) {
+    if (data is List && data.isNotEmpty) {
+      final firstElement = data.first;
+      if (firstElement is Map<String, dynamic>) {
+        return firstElement;
+      }
+    }
+    if (data is Map<String, dynamic>) {
+      return data;
+    }
+    return null;
   }
 
 }

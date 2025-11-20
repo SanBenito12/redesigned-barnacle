@@ -11,16 +11,21 @@ class ProfileInfoContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.center,
       children: [
-        _imageBackground(context),
-        Column(
-          children: [
-            _imageProfile(),
-            Spacer(),
-            _cardProfileInfo(context)
-          ],
-        )
+        Positioned.fill(child: _imageBackground()),
+        SafeArea(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _imageProfile(),
+                SizedBox(height: 24),
+                _cardProfileInfo(context)
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -28,7 +33,6 @@ class ProfileInfoContent extends StatelessWidget {
   Widget _cardProfileInfo(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.35,
       decoration: BoxDecoration(
         color: Color.fromRGBO(255, 255, 255, 0.7),
         borderRadius: BorderRadius.only(
@@ -77,7 +81,6 @@ class ProfileInfoContent extends StatelessWidget {
 
   Widget _imageProfile() {
     return Container(
-      margin: EdgeInsets.only(top: 100),
       width: 150,
       child: AspectRatio(
         aspectRatio: 1/1,
@@ -94,11 +97,9 @@ class ProfileInfoContent extends StatelessWidget {
     ); 
   }
 
-  Widget _imageBackground(BuildContext context) {
+  Widget _imageBackground() {
     return Image.asset(
       'assets/img/background1.jpg',
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
       fit: BoxFit.cover,
       color: Color.fromRGBO(0, 0, 0, 0.7),
       colorBlendMode: BlendMode.darken,

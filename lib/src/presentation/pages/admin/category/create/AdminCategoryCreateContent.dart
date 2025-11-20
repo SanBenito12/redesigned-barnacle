@@ -5,6 +5,7 @@ import 'package:ecommerce_flutter/src/presentation/utils/BlocFormItem.dart';
 import 'package:ecommerce_flutter/src/presentation/utils/SelectOptionImageDialog.dart';
 import 'package:ecommerce_flutter/src/presentation/widgets/DefaultIconBack.dart';
 import 'package:ecommerce_flutter/src/presentation/widgets/DefaultTextField.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/RemoteImage.dart';
 import 'package:flutter/material.dart';
 
 class AdminCategoryCreateContent extends StatelessWidget {
@@ -53,13 +54,16 @@ class AdminCategoryCreateContent extends StatelessWidget {
       ),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 35),
-        child: Column(
-          children: [
-            _textNewCategory(),
-            _textFieldName(),
-            _textFieldDescription(),
-            _fabSubmit()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _textNewCategory(),
+              _textFieldName(),
+              _textFieldDescription(),
+              _textFieldImageUrl(),
+              _fabSubmit()
+            ],
+          ),
         ),
       ),
     );
@@ -125,6 +129,20 @@ class AdminCategoryCreateContent extends StatelessWidget {
     );
   }
 
+  Widget _textFieldImageUrl() {
+    return DefaultTextField(
+      label: 'Link de la imagen (opcional)', 
+      icon: Icons.link, 
+      onChanged: (text) {
+        bloc?.add(ImageUrlChanged(imageUrl: BlocFormItem(value: text)));
+      },
+      validator: (value) {
+        return null;
+      },
+      color: Colors.black,
+    );
+  }
+
   Widget _imageCategory(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -144,6 +162,12 @@ class AdminCategoryCreateContent extends StatelessWidget {
             ? Image.file(
               state.file!,
               fit: BoxFit.cover,
+            )
+            : state.imageUrl.value.isNotEmpty
+            ? RemoteImage(
+              imageUrl: state.imageUrl.value,
+              fit: BoxFit.cover,
+              fadeInDuration: Duration(seconds: 1),
             )
             : Image.asset(
               'assets/img/no-image.png',

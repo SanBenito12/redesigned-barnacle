@@ -47,6 +47,13 @@ class ProfileUpdatePhoneChanged extends ProfileUpdateEvent {
   @override
   List<Object?> get props => [phone];
 }
+
+class ProfileUpdateImageUrlChanged extends ProfileUpdateEvent {
+  final BlocFormItem imageUrl;
+  const ProfileUpdateImageUrlChanged({ required this.imageUrl });
+  @override
+  List<Object?> get props => [imageUrl];
+}
   
 class ProfileUpdateFormSubmit extends ProfileUpdateEvent {
   const ProfileUpdateFormSubmit();

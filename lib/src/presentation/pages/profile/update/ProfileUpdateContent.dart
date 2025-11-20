@@ -49,24 +49,27 @@ class ProfileUpdateContent extends StatelessWidget {
   Widget _cardProfileInfo(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.44,
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(255, 255, 255, 0.7),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(35),
+        height: MediaQuery.of(context).size.height * 0.44,
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(255, 255, 255, 0.7),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(35),
           topRight: Radius.circular(35),
         )
       ),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 15),
-        child: Column(
-          children: [
-            _textUpdateInfo(),
-            _textFieldName(),
-            _textFieldLastname(),
-            _textFieldPhone(),
-            _fabSubmit()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _textUpdateInfo(),
+              _textFieldName(),
+              _textFieldLastname(),
+              _textFieldPhone(),
+              _textFieldImageUrl(),
+              _fabSubmit()
+            ],
+          ),
         ),
       ),
     );
@@ -156,6 +159,24 @@ class ProfileUpdateContent extends StatelessWidget {
     );
   } 
 
+  Widget _textFieldImageUrl() {
+    return Container(
+      margin: EdgeInsets.only(left: 25, right: 25),
+      child: DefaultTextField(
+        label: 'Link de la imagen (opcional)',
+        icon: Icons.link,
+        color: Colors.black,
+        initialValue: state.imageUrl.value,
+        onChanged: (text) {
+          bloc?.add(ProfileUpdateImageUrlChanged(imageUrl: BlocFormItem(value: text)));
+        },
+        validator: (value) {
+          return null;
+        },
+      )
+    );
+  }
+
   Widget _imageProfile(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -177,7 +198,7 @@ class ProfileUpdateContent extends StatelessWidget {
               fit: BoxFit.cover,
             ) 
             : RemoteImage(
-              imageUrl: user?.image,
+              imageUrl: state.imageUrl.value.isNotEmpty ? state.imageUrl.value : user?.image,
               fit: BoxFit.cover,
               fadeInDuration: Duration(seconds: 1),
             ),

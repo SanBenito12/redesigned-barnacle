@@ -29,7 +29,7 @@ class MercadoPagoInstallments {
         issuer: Issuer.fromJson(json["issuer"]),
         processingMode: json["processing_mode"],
         merchantAccountId: json["merchant_account_id"],
-        payerCosts: List<PayerCost>.from(json["payer_costs"].map((x) => PayerCost.fromJson(x))),
+        payerCosts: json["payer_costs"] == null ? [] : List<PayerCost>.from(json["payer_costs"].map((x) => PayerCost.fromJson(x))),
         agreements: json["agreements"],
     );
 
@@ -58,10 +58,10 @@ class Issuer {
     });
 
     factory Issuer.fromJson(Map<String, dynamic> json) => Issuer(
-        id: json["id"],
-        name: json["name"],
-        secureThumbnail: json["secure_thumbnail"],
-        thumbnail: json["thumbnail"],
+        id: json["id"]?.toString() ?? '',
+        name: json["name"] ?? '',
+        secureThumbnail: json["secure_thumbnail"] ?? '',
+        thumbnail: json["thumbnail"] ?? '',
     );
 
     Map<String, dynamic> toJson() => {
@@ -74,17 +74,17 @@ class Issuer {
 
 class PayerCost {
     int installments;
-    int installmentRate;
-    int discountRate;
-    dynamic reimbursementRate;
+    double installmentRate;
+    double discountRate;
+    double? reimbursementRate;
     List<String> labels;
-    List<InstallmentRateCollector> installmentRateCollector;
-    int minAllowedAmount;
-    int maxAllowedAmount;
+    List<String> installmentRateCollector;
+    double minAllowedAmount;
+    double maxAllowedAmount;
     String recommendedMessage;
     double installmentAmount;
-    int totalAmount;
-    PaymentMethodOptionId paymentMethodOptionId;
+    double totalAmount;
+    String paymentMethodOptionId;
 
     PayerCost({
         required this.installments,
@@ -102,18 +102,18 @@ class PayerCost {
     });
 
     factory PayerCost.fromJson(Map<String, dynamic> json) => PayerCost(
-        installments: json["installments"],
-        installmentRate: json["installment_rate"],
-        discountRate: json["discount_rate"],
-        reimbursementRate: json["reimbursement_rate"],
-        labels: List<String>.from(json["labels"].map((x) => x)),
-        installmentRateCollector: List<InstallmentRateCollector>.from(json["installment_rate_collector"].map((x) => installmentRateCollectorValues.map[x]!)),
-        minAllowedAmount: json["min_allowed_amount"],
-        maxAllowedAmount: json["max_allowed_amount"],
-        recommendedMessage: json["recommended_message"],
-        installmentAmount: json["installment_amount"]?.toDouble(),
-        totalAmount: json["total_amount"],
-        paymentMethodOptionId: paymentMethodOptionIdValues.map[json["payment_method_option_id"]]!,
+        installments: json["installments"] is num ? (json["installments"] as num).toInt() : int.tryParse(json["installments"]?.toString() ?? '0') ?? 0,
+        installmentRate: _toDouble(json["installment_rate"]),
+        discountRate: _toDouble(json["discount_rate"]),
+        reimbursementRate: json["reimbursement_rate"] == null ? null : _toDouble(json["reimbursement_rate"]),
+        labels: json["labels"] == null ? [] : List<String>.from(json["labels"].map((x) => x.toString())),
+        installmentRateCollector: json["installment_rate_collector"] == null ? [] : List<String>.from(json["installment_rate_collector"].map((x) => x.toString())),
+        minAllowedAmount: _toDouble(json["min_allowed_amount"]),
+        maxAllowedAmount: _toDouble(json["max_allowed_amount"]),
+        recommendedMessage: json["recommended_message"] ?? '',
+        installmentAmount: _toDouble(json["installment_amount"]),
+        totalAmount: _toDouble(json["total_amount"]),
+        paymentMethodOptionId: json["payment_method_option_id"]?.toString() ?? '',
     );
 
     Map<String, dynamic> toJson() => {
@@ -122,42 +122,18 @@ class PayerCost {
         "discount_rate": discountRate,
         "reimbursement_rate": reimbursementRate,
         "labels": List<dynamic>.from(labels.map((x) => x)),
-        "installment_rate_collector": List<dynamic>.from(installmentRateCollector.map((x) => installmentRateCollectorValues.reverse[x])),
+        "installment_rate_collector": List<dynamic>.from(installmentRateCollector.map((x) => x)),
         "min_allowed_amount": minAllowedAmount,
         "max_allowed_amount": maxAllowedAmount,
         "recommended_message": recommendedMessage,
         "installment_amount": installmentAmount,
         "total_amount": totalAmount,
-        "payment_method_option_id": paymentMethodOptionIdValues.reverse[paymentMethodOptionId],
+        "payment_method_option_id": paymentMethodOptionId,
     };
 }
 
-enum InstallmentRateCollector {
-    MERCADOPAGO,
-    THIRD_PARTY
-}
-
-final installmentRateCollectorValues = EnumValues({
-    "MERCADOPAGO": InstallmentRateCollector.MERCADOPAGO,
-    "THIRD_PARTY": InstallmentRateCollector.THIRD_PARTY
-});
-
-enum PaymentMethodOptionId {
-    THE_1_A_QOK_O_DLL_ZJ_QY_NJKT_YJ_AZ_MY00_OWU1_LW_JH_MW_QT_NDE0_NJ_QY_NTM3_MZ_Y4_E_JA_FUEV_H_LG
-}
-
-final paymentMethodOptionIdValues = EnumValues({
-    "1.AQokODllZjQyNjktYjAzMy00OWU1LWJhMWQtNDE0NjQyNTM3MzY4EJaFuevHLg": PaymentMethodOptionId.THE_1_A_QOK_O_DLL_ZJ_QY_NJKT_YJ_AZ_MY00_OWU1_LW_JH_MW_QT_NDE0_NJ_QY_NTM3_MZ_Y4_E_JA_FUEV_H_LG
-});
-
-class EnumValues<T> {
-    Map<String, T> map;
-    late Map<T, String> reverseMap;
-
-    EnumValues(this.map);
-
-    Map<T, String> get reverse {
-        reverseMap = map.map((k, v) => MapEntry(v, k));
-        return reverseMap;
-    }
+double _toDouble(dynamic value) {
+  if (value == null) return 0;
+  if (value is num) return value.toDouble();
+  return double.tryParse(value.toString()) ?? 0;
 }

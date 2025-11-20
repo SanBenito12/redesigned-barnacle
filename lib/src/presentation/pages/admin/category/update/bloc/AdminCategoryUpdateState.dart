@@ -10,6 +10,7 @@ class AdminCategoryUpdateState extends Equatable {
   final int id;
   final BlocFormItem name;
   final BlocFormItem description;
+  final BlocFormItem imageUrl;
   final GlobalKey<FormState>? formKey;
   File? file;
   final Resource? response;
@@ -18,6 +19,7 @@ class AdminCategoryUpdateState extends Equatable {
     this.id = 0,
     this.name = const BlocFormItem(error: 'Ingresa el nombre'),
     this.description = const BlocFormItem(error: 'Ingresa la descripcion'),
+    this.imageUrl = const BlocFormItem(value: ''),
     this.formKey,
     this.response,
     this.file
@@ -26,12 +28,14 @@ class AdminCategoryUpdateState extends Equatable {
   toCategory() => Category(
     id: id,
     name: name.value, 
-    description: description.value, 
+    description: description.value,
+    image: imageUrl.value.isNotEmpty ? imageUrl.value : null
   );  
 
   AdminCategoryUpdateState resetForm() {
     return AdminCategoryUpdateState(
-      file: null
+      file: null,
+      imageUrl: imageUrl
     );
   }
 
@@ -39,6 +43,7 @@ class AdminCategoryUpdateState extends Equatable {
     int? id,
     BlocFormItem? name,
     BlocFormItem? description,
+    BlocFormItem? imageUrl,
     GlobalKey<FormState>? formKey,
     File? file,
     Resource? response
@@ -47,6 +52,7 @@ class AdminCategoryUpdateState extends Equatable {
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
       file: file ?? this.file,
       formKey: formKey,
       response: response
@@ -54,6 +60,6 @@ class AdminCategoryUpdateState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, description, file, response];
+  List<Object?> get props => [id, name, description, imageUrl, file, response];
 
 }

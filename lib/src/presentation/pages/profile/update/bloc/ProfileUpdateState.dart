@@ -12,7 +12,9 @@ class ProfileUpdateState extends Equatable {
   final BlocFormItem name;
   final BlocFormItem lastname;
   final BlocFormItem phone;
+  final BlocFormItem imageUrl;
   final File? image; 
+  final String? notificationToken;
   final GlobalKey<FormState>? formKey;
   final Resource? response;
 
@@ -21,6 +23,8 @@ class ProfileUpdateState extends Equatable {
     this.name = const BlocFormItem(error: 'Ingresa el nombre'),
     this.lastname = const BlocFormItem(error: 'Ingresa el apellido'),
     this.phone = const BlocFormItem(error: 'Ingresa el telefono'),
+    this.imageUrl = const BlocFormItem(value: ''),
+    this.notificationToken,
     this.formKey,
     this.image,
     this.response
@@ -30,7 +34,9 @@ class ProfileUpdateState extends Equatable {
     id: id,
     name: name.value, 
     lastname: lastname.value, 
-    phone: phone.value
+    phone: phone.value,
+    image: imageUrl.value.isNotEmpty ? imageUrl.value : null,
+    notificationToken: notificationToken
   );
 
   ProfileUpdateState copyWith({
@@ -38,7 +44,9 @@ class ProfileUpdateState extends Equatable {
     BlocFormItem? name,
     BlocFormItem? lastname,
     BlocFormItem? phone,
+    BlocFormItem? imageUrl,
     File? image,
+    String? notificationToken,
     GlobalKey<FormState>? formKey,
     Resource? response
   }) {
@@ -47,13 +55,15 @@ class ProfileUpdateState extends Equatable {
       name: name ?? this.name,
       lastname: lastname ?? this.lastname,
       phone: phone ?? this.phone,
+      imageUrl: imageUrl ?? this.imageUrl,
       image: image ?? this.image,
+      notificationToken: notificationToken ?? this.notificationToken,
       formKey: formKey,
       response: response
     );
   }
 
   @override
-  List<Object?> get props => [id, name, lastname, phone, image, response];
+  List<Object?> get props => [id, name, lastname, phone, imageUrl, image, notificationToken, response];
 
 }

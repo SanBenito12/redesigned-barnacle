@@ -9,6 +9,6 @@ class CreateCategoryUseCase {
 
   CreateCategoryUseCase(this.categoriesRepository);
 
-  run(Category category, File file) => categoriesRepository.create(category, file);
+  run(Category category, File? file) => categoriesRepository.create(category, file);
 
 }

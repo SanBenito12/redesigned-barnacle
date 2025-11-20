@@ -46,7 +46,8 @@ class _ClientPaymentFormPageState extends State<ClientPaymentFormPage> {
               (route) => false,
               arguments: {
                 'mercadoPagoCardTokenResponse': response,
-                'amount': state.totalToPay.toString()
+                'amount': state.totalToPay.toString(),
+                'cardNumber': state.cardNumber.replaceAll(RegExp('\\s+'), '')
               }
             );
             print('Respuesta Card Token: ${response.toJson()}');

@@ -27,6 +27,8 @@ class UsersService {
         'name': user.name,
         'lastname': user.lastname,
         'phone': user.phone,
+        'notification_token': user.notificationToken,
+        if ((user.image ?? '').isNotEmpty) 'image': user.image,
       });
       final response = await http.put(url, headers: headers, body: body);
       final data = json.decode(response.body);
@@ -57,11 +59,12 @@ class UsersService {
         filename: basename(file.path),
         contentType: MediaType('image', 'jpg')
       ));
-      request.fields['user'] = json.encode({
-        'name': user.name,
-        'lastname': user.lastname,
-        'phone': user.phone,
-      });
+      request.fields['name'] = user.name;
+      request.fields['lastname'] = user.lastname;
+      request.fields['phone'] = user.phone;
+      if ((user.notificationToken ?? '').isNotEmpty) {
+        request.fields['notification_token'] = user.notificationToken!;
+      }
       final response = await request.send();
       print('RESPONSE: ${response.statusCode}');
       final data = json.decode(await response.stream.transform(utf8.decoder).first);

@@ -56,13 +56,16 @@ class AdminCategoryUpdateContent extends StatelessWidget {
       ),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 35),
-        child: Column(
-          children: [
-            _textNewCategory(),
-            _textFieldName(),
-            _textFieldDescription(),
-            _fabSubmit()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _textNewCategory(),
+              _textFieldName(),
+              _textFieldDescription(),
+              _textFieldImageUrl(),
+              _fabSubmit()
+            ],
+          ),
         ),
       ),
     );
@@ -130,6 +133,21 @@ class AdminCategoryUpdateContent extends StatelessWidget {
     );
   }
 
+  Widget _textFieldImageUrl() {
+    return DefaultTextField(
+      label: 'Link de la imagen (opcional)', 
+      icon: Icons.link, 
+      initialValue: state.imageUrl.value,
+      onChanged: (text) {
+        bloc?.add(ImageUrlChanged(imageUrl: BlocFormItem(value: text)));
+      },
+      validator: (value) {
+        return null;
+      },
+      color: Colors.black,
+    );
+  }
+
   Widget _imageCategory(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -150,9 +168,9 @@ class AdminCategoryUpdateContent extends StatelessWidget {
               state.file!,
               fit: BoxFit.cover,
             )
-            : category != null 
+            : (state.imageUrl.value.isNotEmpty || category != null) 
             ? RemoteImage(
-              imageUrl: category?.image,
+              imageUrl: state.imageUrl.value.isNotEmpty ? state.imageUrl.value : category?.image,
               fit: BoxFit.cover,
               fadeInDuration: Duration(seconds: 1),
             )

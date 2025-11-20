@@ -9,7 +9,7 @@ MercadoPagoPaymentBody mercadoPagoPaymentBodyFromJson(String str) => MercadoPago
 String mercadoPagoPaymentBodyToJson(MercadoPagoPaymentBody data) => json.encode(data.toJson());
 
 class MercadoPagoPaymentBody {
-    int transactionAmount;
+    double transactionAmount;
     String token;
     int installments;
     String issuerId;
@@ -28,7 +28,7 @@ class MercadoPagoPaymentBody {
     });
 
     factory MercadoPagoPaymentBody.fromJson(Map<String, dynamic> json) => MercadoPagoPaymentBody(
-        transactionAmount: json["transaction_amount"],
+        transactionAmount: (json["transaction_amount"] as num).toDouble(),
         token: json["token"],
         installments: json["installments"],
         issuerId: json["issuer_id"],
@@ -91,5 +91,3 @@ class Payer {
         "identification": identification.toJson(),
     };
 }
-
-

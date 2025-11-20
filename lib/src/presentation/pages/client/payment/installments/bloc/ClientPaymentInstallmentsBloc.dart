@@ -56,12 +56,31 @@ class ClientPaymentInstallmentsBloc extends Bloc<ClientPaymentInstallmentsEvent,
     );
     
     double totalToPay = await shoppingBagUseCases.getTotal.run();
-    AuthResponse authResponse = await authUseCases.getUserSession.run();
-    Address address = await addressUseCases.getAddressSession.run();
+    AuthResponse? authResponse = await authUseCases.getUserSession.run();
+    if (authResponse == null) {
+      emit(
+        state.copyWith(
+          responsePayment: Error('Tu sesión expiró, vuelve a iniciar sesión')
+        )
+      );
+      return;
+    }
+
+    Address? address = await addressUseCases.getAddressSession.run();
+    if (address == null || address.idUser != authResponse.user.id) {
+      await addressUseCases.deleteFromSession.run();
+      emit(
+        state.copyWith(
+          responsePayment: Error('Selecciona una dirección válida para continuar con el pago')
+        )
+      );
+      return;
+    }
+    final Address selectedAddress = address;
     List<Product> products = await shoppingBagUseCases.getProducts.run();
 
     MercadoPagoPaymentBody body = MercadoPagoPaymentBody(
-      transactionAmount: totalToPay.toInt(), 
+      transactionAmount: totalToPay, 
       token: event.mercadoPagoCardTokenResponse.id, 
       installments: int.parse(state.installment!), 
       issuerId: event.installments.issuer.id, 
@@ -75,7 +94,7 @@ class ClientPaymentInstallmentsBloc extends Bloc<ClientPaymentInstallmentsEvent,
       ), 
       order: OrderBody(
         idClient: authResponse.user.id!, 
-        idAddress: address.id!, 
+        idAddress: selectedAddress.id!, 
         products: products
       )
     );
