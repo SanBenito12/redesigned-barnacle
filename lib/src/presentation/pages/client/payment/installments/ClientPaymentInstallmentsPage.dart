@@ -6,6 +6,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/client/payment/installm
 import 'package:ecommerce_flutter/src/presentation/pages/client/payment/installments/bloc/ClientPaymentInstallmentsBloc.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/payment/installments/bloc/ClientPaymentInstallmentsEvent.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/payment/installments/bloc/ClientPaymentInstallmentsState.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -50,6 +51,7 @@ class _ClientPaymentInstallmentsPageState
     _bloc = BlocProvider.of<ClientPaymentInstallmentsBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Ultimo paso'),
         backgroundColor: Colors.grey[200],
       ),

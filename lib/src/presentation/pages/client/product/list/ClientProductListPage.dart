@@ -5,6 +5,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/client/product/list/Cli
 import 'package:ecommerce_flutter/src/presentation/pages/client/product/list/bloc/ClientProductListBloc.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/product/list/bloc/ClientProductListEvent.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/product/list/bloc/ClientProductListState.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -37,6 +38,7 @@ class _ClientProductListPageState extends State<ClientProductListPage> {
     _bloc = BlocProvider.of<ClientProductListBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Productos'),
       ),
       body: BlocListener<ClientProductListBloc, ClientProductListState>(

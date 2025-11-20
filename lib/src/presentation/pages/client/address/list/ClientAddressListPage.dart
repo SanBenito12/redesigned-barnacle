@@ -4,6 +4,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/client/address/list/Cli
 import 'package:ecommerce_flutter/src/presentation/pages/client/address/list/bloc/ClientAddressListBloc.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/address/list/bloc/ClientAddressListEvent.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/address/list/bloc/ClientAddressListState.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -32,6 +33,7 @@ class _ClientAddressListPageState extends State<ClientAddressListPage> {
     _bloc = BlocProvider.of<ClientAddressListBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Mis direcciones'),
         actions: [
           IconButton(

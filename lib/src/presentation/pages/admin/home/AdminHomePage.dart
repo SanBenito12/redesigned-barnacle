@@ -7,6 +7,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/admin/order/list/AdminO
 import 'package:ecommerce_flutter/src/presentation/pages/admin/product/list/AdminProductListPage.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/roles/RolesPage.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,7 +35,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
     _bloc = BlocProvider.of<AdminHomeBloc>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Menu')),
+      appBar: AppBar(
+        leading: buildAppBackButton(context),
+        title: Text('Menu'),
+      ),
       drawer: BlocBuilder<AdminHomeBloc, AdminHomeState>(
         builder: (context, state) {
           return Drawer(

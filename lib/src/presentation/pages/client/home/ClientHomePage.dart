@@ -6,6 +6,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/client/home/bloc/Client
 import 'package:ecommerce_flutter/src/presentation/pages/client/order/list/ClientOrderListPage.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/profile/info/ProfileInfoPage.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/roles/RolesPage.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,6 +33,7 @@ class _ClientHomePageState extends State<ClientHomePage> {
     _bloc = BlocProvider.of<ClientHomeBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Menu'),
         actions: [
           IconButton(

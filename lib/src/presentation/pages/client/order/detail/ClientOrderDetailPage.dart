@@ -1,6 +1,7 @@
 import 'package:ecommerce_flutter/src/domain/models/Order.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/order/detail/ClientOrderDetailBottom.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/order/detail/ClientOrderDetailItem.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 
 class ClientOrderDetailPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class _ClientOrderDetailPageState extends State<ClientOrderDetailPage> {
     order = ModalRoute.of(context)?.settings.arguments as Order;
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Detalle del pedido'),
       ),
       body: ListView.builder(

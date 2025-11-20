@@ -4,6 +4,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/client/ShoppingBag/bloc
 import 'package:ecommerce_flutter/src/presentation/pages/client/ShoppingBag/bloc/ClientShoppingBagEvent.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/ShoppingBag/bloc/ClientShoppingBagState.dart';
 import 'package:ecommerce_flutter/src/presentation/widgets/DefaultButton.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,6 +31,7 @@ class _ClientShoppingBagPageState extends State<ClientShoppingBagPage> {
     _bloc = BlocProvider.of<ClientShoppingBagBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Mi orden'),
       ),
       body: BlocBuilder<ClientShoppingBagBloc, ClientShoppingBagState>(

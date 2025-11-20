@@ -6,6 +6,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/admin/order/detail/bloc
 import 'package:ecommerce_flutter/src/presentation/pages/admin/order/detail/bloc/AdminOrderDetailState.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/admin/order/list/bloc/AdminOrderListBloc.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/admin/order/list/bloc/AdminOrderListEvent.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,6 +28,7 @@ class _AdminOrderDetailPageState extends State<AdminOrderDetailPage> {
     _bloc = BlocProvider.of<AdminOrderDetailBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Detalle del pedido'),
       ),
       body: BlocListener<AdminOrderDetailBloc, AdminOrderDetailState>(

@@ -5,6 +5,7 @@ import 'package:ecommerce_flutter/src/presentation/pages/client/payment/form/blo
 import 'package:ecommerce_flutter/src/presentation/pages/client/payment/form/bloc/ClientPaymentFormState.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/client/payment/form/bloc/ClientPaymentFormEvent.dart';
 import 'package:ecommerce_flutter/src/presentation/widgets/DefaultButton.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/app_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -24,6 +25,7 @@ class _ClientPaymentFormPageState extends State<ClientPaymentFormPage> {
     _bloc = BlocProvider.of<ClientPaymentFormBloc>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: buildAppBackButton(context),
         title: Text('Formulario de pagos'),
       ),
       bottomNavigationBar: Container(
