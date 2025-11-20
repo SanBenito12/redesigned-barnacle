@@ -25,6 +25,14 @@ class _AdminCategoryCreatePageState extends State<AdminCategoryCreatePage> {
   Widget build(BuildContext context) {
     _bloc = BlocProvider.of<AdminCategoryCreateBloc>(context);
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: BlocListener<AdminCategoryCreateBloc, AdminCategoryCreateState>(
         listener: (context, state) {
           final responseState = state.response;

@@ -64,14 +64,18 @@ class AdminProductUpdateContent extends StatelessWidget {
       ),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 35),
-        child: Column(
-          children: [
-            _textNewProduct(),
-            _textFieldName(),
-            _textFieldDescription(),
-            _textFieldPrice(),
-            _fabSubmit()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _textNewProduct(),
+              _textFieldName(),
+              _textFieldDescription(),
+              _textFieldPrice(),
+              _textFieldImageUrl1(),
+              _textFieldImageUrl2(),
+              _fabSubmit()
+            ],
+          ),
         ),
       ),
     );
@@ -155,6 +159,32 @@ class AdminProductUpdateContent extends StatelessWidget {
     );
   }
 
+  Widget _textFieldImageUrl1() {
+    return DefaultTextField(
+      label: 'Link imagen 1 (opcional)', 
+      icon: Icons.link, 
+      initialValue: state.imageUrl1.value,
+      onChanged: (text) {
+        bloc?.add(ImageUrlChanged(numberFile: 1, imageUrl: BlocFormItem(value: text)));
+      },
+      validator: (value) => null,
+      color: Colors.black,
+    );
+  }
+
+  Widget _textFieldImageUrl2() {
+    return DefaultTextField(
+      label: 'Link imagen 2 (opcional)', 
+      icon: Icons.link, 
+      initialValue: state.imageUrl2.value,
+      onChanged: (text) {
+        bloc?.add(ImageUrlChanged(numberFile: 2, imageUrl: BlocFormItem(value: text)));
+      },
+      validator: (value) => null,
+      color: Colors.black,
+    );
+  }
+
   Widget _imageProductOne(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -175,9 +205,9 @@ class AdminProductUpdateContent extends StatelessWidget {
               state.file1!,
               fit: BoxFit.cover,
             )
-            : product != null 
+            : (state.imageUrl1.value.isNotEmpty || product != null) 
             ? RemoteImage(
-              imageUrl: product?.image1,
+              imageUrl: state.imageUrl1.value.isNotEmpty ? state.imageUrl1.value : product?.image1,
               fit: BoxFit.cover,
               fadeInDuration: Duration(seconds: 1),
             )
@@ -211,9 +241,9 @@ class AdminProductUpdateContent extends StatelessWidget {
               state.file2!,
               fit: BoxFit.cover,
             )
-            : product != null 
+            : (state.imageUrl2.value.isNotEmpty || product != null) 
             ? RemoteImage(
-              imageUrl: product?.image2,
+              imageUrl: state.imageUrl2.value.isNotEmpty ? state.imageUrl2.value : product?.image2,
               fit: BoxFit.cover,
               fadeInDuration: Duration(seconds: 1),
             )

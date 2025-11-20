@@ -37,6 +37,14 @@ class PriceChanged extends AdminProductUpdateEvent {
   List<Object?> get props => [price];
 }
 
+class ImageUrlChanged extends AdminProductUpdateEvent {
+  final int numberFile;
+  final BlocFormItem imageUrl;
+  const ImageUrlChanged({ required this.numberFile, required this.imageUrl });
+  @override
+  List<Object?> get props => [numberFile, imageUrl];
+}
+
 class FormSubmit extends AdminProductUpdateEvent {
   const FormSubmit();
   @override

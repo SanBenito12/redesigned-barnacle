@@ -14,35 +14,58 @@ class ProductsService {
 
   ProductsService(this.token);
 
-  Future<Resource<Product>> create(Product product, List<File> files) async {
+  Future<Resource<Product>> create(Product product, List<File>? files) async {
     try {
       // http://192.168.80.13:3000/users/5
       Uri url = Uri.http(ApiConfig.API_ECOMMERCE, '/products'); 
-      
-      final request = http.MultipartRequest('POST', url);
-      request.headers['Authorization'] = await token;
-      files.forEach((file) async {
-        request.files.add(http.MultipartFile(
-          'files[]',
-          http.ByteStream(file.openRead().cast()),
-          await file.length(),
-          filename: basename(file.path),
-          contentType: MediaType('image', 'jpg')
-        ));
-      });
-      request.fields['name'] = product.name;
-      request.fields['description'] = product.description;
-      request.fields['price'] = product.price.toString();
-      request.fields['id_category'] = product.idCategory.toString();
-      final response = await request.send();
-      final data = json.decode(await response.stream.transform(utf8.decoder).first);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        Product productResponse = Product.fromJson(data);
-        return Success(productResponse);
+      if (files != null && files.isNotEmpty) {
+        final request = http.MultipartRequest('POST', url);
+        request.headers['Authorization'] = await token;
+        for (final file in files) {
+          request.files.add(http.MultipartFile(
+            'files[]',
+            http.ByteStream(file.openRead().cast()),
+            await file.length(),
+            filename: basename(file.path),
+            contentType: MediaType('image', 'jpg')
+          ));
+        }
+        request.fields['name'] = product.name;
+        request.fields['description'] = product.description;
+        request.fields['price'] = product.price.toString();
+        request.fields['id_category'] = product.idCategory.toString();
+        final response = await request.send();
+        final data = json.decode(await response.stream.transform(utf8.decoder).first);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Product productResponse = Product.fromJson(data);
+          return Success(productResponse);
+        }
+        else { // ERROR
+          return Error(listToString(data['message']));
+        }      
+      } else {
+        Map<String, String> headers = { 
+          "Content-Type": "application/json",
+          "Authorization": await token
+        };
+        String body = json.encode({
+          'name': product.name,
+          'description': product.description,
+          'price': product.price,
+          'id_category': product.idCategory,
+          if ((product.image1 ?? '').isNotEmpty) 'image1': product.image1,
+          if ((product.image2 ?? '').isNotEmpty) 'image2': product.image2,
+        });
+        final response = await http.post(url, headers: headers, body: body);
+        final data = json.decode(response.body);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Product productResponse = Product.fromJson(data);
+          return Success(productResponse);
+        }
+        else { // ERROR
+          return Error(listToString(data['message']));
+        } 
       }
-      else { // ERROR
-        return Error(listToString(data['message']));
-      }      
     } catch (e) {
       print('Error: $e');
       return Error(e.toString());
@@ -82,6 +105,8 @@ class ProductsService {
         'name': product.name,
         'description': product.description,
         'price': product.price,
+        if ((product.image1 ?? '').isNotEmpty) 'image1': product.image1,
+        if ((product.image2 ?? '').isNotEmpty) 'image2': product.image2,
       });
       final response = await http.put(url, headers: headers, body: body);
       final data = json.decode(response.body);

@@ -18,6 +18,7 @@ class AdminProductCreateBloc extends Bloc<AdminProductCreateEvent, AdminProductC
     on<NameChanged>(_onNameChanged);
     on<PriceChanged>(_onPriceChanged);
     on<DescriptionChanged>(_onDescriptionChanged);
+    on<ImageUrlChanged>(_onImageUrlChanged);
     on<FormSubmit>(_onFormSubmit);
     on<ResetForm>(_onResetForm);
     on<PickImage>(_onPickImage);
@@ -71,6 +72,26 @@ class AdminProductCreateBloc extends Bloc<AdminProductCreateEvent, AdminProductC
     );
   }
 
+  Future<void> _onImageUrlChanged(ImageUrlChanged event, Emitter<AdminProductCreateState> emit) async {
+    if (event.numberFile == 1) {
+      emit(
+        state.copyWith(
+          imageUrl1: BlocFormItem(value: event.imageUrl.value, error: null),
+          file1: null,
+          formKey: formKey
+        )
+      );
+    } else if (event.numberFile == 2) {
+      emit(
+        state.copyWith(
+          imageUrl2: BlocFormItem(value: event.imageUrl.value, error: null),
+          file2: null,
+          formKey: formKey
+        )
+      );
+    }
+  }
+
   Future<void> _onPickImage(PickImage event, Emitter<AdminProductCreateState> emit) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -79,6 +100,7 @@ class AdminProductCreateBloc extends Bloc<AdminProductCreateEvent, AdminProductC
         emit(
           state.copyWith(
             file1: File(image.path),
+            imageUrl1: const BlocFormItem(value: ''),
             formKey: formKey
           )
         );
@@ -87,6 +109,7 @@ class AdminProductCreateBloc extends Bloc<AdminProductCreateEvent, AdminProductC
         emit(
           state.copyWith(
             file2: File(image.path),
+            imageUrl2: const BlocFormItem(value: ''),
             formKey: formKey
           )
         );
@@ -102,6 +125,7 @@ class AdminProductCreateBloc extends Bloc<AdminProductCreateEvent, AdminProductC
         emit(
           state.copyWith(
             file1: File(image.path),
+            imageUrl1: const BlocFormItem(value: ''),
             formKey: formKey
           )
         );
@@ -110,6 +134,7 @@ class AdminProductCreateBloc extends Bloc<AdminProductCreateEvent, AdminProductC
         emit(
           state.copyWith(
             file2: File(image.path),
+            imageUrl2: const BlocFormItem(value: ''),
             formKey: formKey
           )
         );
@@ -124,24 +149,27 @@ class AdminProductCreateBloc extends Bloc<AdminProductCreateEvent, AdminProductC
           formKey: formKey
         )
       );
-      if (state.file1 != null && state.file2 != null) {
-        List<File> files = [state.file1!, state.file2!];
-        Resource response = await productsUseCases.create.run(state.toProduct(), files);
+      final hasImage1 = state.file1 != null || state.imageUrl1.value.isNotEmpty;
+      final hasImage2 = state.file2 != null || state.imageUrl2.value.isNotEmpty;
+      if (!hasImage1 || !hasImage2) {
         emit(
           state.copyWith(
-            response: response,
+            response: Error('Agrega link o foto para las dos imagenes'),
             formKey: formKey
           )
         );
+        return;
       }
-      else {
-        emit(
-          state.copyWith(
-            response: Error('Selecciona las dos imagenes'),
-            formKey: formKey
-          )
-        );
-      }
+      final List<File> files = [];
+      if (state.file1 != null) files.add(state.file1!);
+      if (state.file2 != null) files.add(state.file2!);
+      Resource response = await productsUseCases.create.run(state.toProduct(), files.isNotEmpty ? files : null);
+      emit(
+        state.copyWith(
+          response: response,
+          formKey: formKey
+        )
+      );
   }
 
   Future<void> _onResetForm(ResetForm event, Emitter<AdminProductCreateState> emit) async {

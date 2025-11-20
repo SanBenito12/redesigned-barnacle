@@ -46,6 +46,14 @@ class _AdminCategoryUpdatePageState extends State<AdminCategoryUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: BlocListener<AdminCategoryUpdateBloc, AdminCategoryUpdateState>(
         listener: (context, state) {
           final responseState = state.response;

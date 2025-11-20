@@ -2,6 +2,7 @@ import 'package:ecommerce_flutter/src/presentation/utils/BlocFormItem.dart';
 import 'package:ecommerce_flutter/src/presentation/utils/SelectOptionImageDialog.dart';
 import 'package:ecommerce_flutter/src/presentation/widgets/DefaultIconBack.dart';
 import 'package:ecommerce_flutter/src/presentation/widgets/DefaultTextField.dart';
+import 'package:ecommerce_flutter/src/presentation/widgets/RemoteImage.dart';
 import 'package:flutter/material.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/admin/product/create/bloc/AdminProductCreateBloc.dart';
 import 'package:ecommerce_flutter/src/presentation/pages/admin/product/create/bloc/AdminProductCreateState.dart';
@@ -60,14 +61,18 @@ class AdminProductCreateContent extends StatelessWidget {
       ),
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 35),
-        child: Column(
-          children: [
-            _textNewProduct(),
-            _textFieldName(),
-            _textFieldDescription(),
-            _textFieldPrice(),
-            _fabSubmit()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              _textNewProduct(),
+              _textFieldName(),
+              _textFieldDescription(),
+              _textFieldPrice(),
+              _textFieldImageUrl1(),
+              _textFieldImageUrl2(),
+              _fabSubmit()
+            ],
+          ),
         ),
       ),
     );
@@ -148,6 +153,30 @@ class AdminProductCreateContent extends StatelessWidget {
     );
   }
 
+  Widget _textFieldImageUrl1() {
+    return DefaultTextField(
+      label: 'Link imagen 1 (opcional)', 
+      icon: Icons.link,
+      onChanged: (text) {
+        bloc?.add(ImageUrlChanged(numberFile: 1, imageUrl: BlocFormItem(value: text)));
+      },
+      validator: (value) => null,
+      color: Colors.black,
+    );
+  }
+
+  Widget _textFieldImageUrl2() {
+    return DefaultTextField(
+      label: 'Link imagen 2 (opcional)', 
+      icon: Icons.link,
+      onChanged: (text) {
+        bloc?.add(ImageUrlChanged(numberFile: 2, imageUrl: BlocFormItem(value: text)));
+      },
+      validator: (value) => null,
+      color: Colors.black,
+    );
+  }
+
   Widget _imageProductOne(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -167,6 +196,12 @@ class AdminProductCreateContent extends StatelessWidget {
             ? Image.file(
               state.file1!,
               fit: BoxFit.cover,
+            )
+            : state.imageUrl1.value.isNotEmpty
+            ? RemoteImage(
+              imageUrl: state.imageUrl1.value,
+              fit: BoxFit.cover,
+              fadeInDuration: Duration(seconds: 1),
             )
             : Image.asset(
               'assets/img/no-image.png',
@@ -197,6 +232,12 @@ class AdminProductCreateContent extends StatelessWidget {
             ? Image.file(
               state.file2!,
               fit: BoxFit.cover,
+            )
+            : state.imageUrl2.value.isNotEmpty
+            ? RemoteImage(
+              imageUrl: state.imageUrl2.value,
+              fit: BoxFit.cover,
+              fadeInDuration: Duration(seconds: 1),
             )
             : Image.asset(
               'assets/img/no-image.png',

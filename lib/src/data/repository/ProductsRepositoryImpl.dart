@@ -12,7 +12,7 @@ class ProductsRepositoryImpl implements ProductsRepository {
   ProductsRepositoryImpl(this.productsService);
 
   @override
-  Future<Resource<Product>> create(Product product, List<File> files) {
+  Future<Resource<Product>> create(Product product, List<File>? files) {
     return productsService.create(product, files);
   }
   

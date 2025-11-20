@@ -8,6 +8,6 @@ class CreateProductUseCase {
 
   CreateProductUseCase(this.productsRepository);
 
-  run(Product product, List<File> files) => productsRepository.create(product, files);
+  run(Product product, List<File>? files) => productsRepository.create(product, files);
 
 }
